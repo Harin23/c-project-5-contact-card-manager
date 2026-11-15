@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include "helpers.h"
 
 #define MAX_NAME_LEN 64
 #define MAX_CONTACTS 50
@@ -29,7 +30,7 @@ static const char *get_menu_state(MenuState state) {
 }
 
 int main() {
-    // Contact contacts[MAX_CONTACTS];
+    Contact contacts[MAX_CONTACTS] = {};
 
     while (1) {
         printf("\nPlease select an action:\n%i. %s\n%i. %s\n%i. %s\n%i. %s\n%i. %s\n",
@@ -46,8 +47,14 @@ int main() {
         );
 
         printf("\nYour selection:");
-        int selection;
-        scanf("%i", &selection);
+        int selection = 0;
+        char input[2];
+         if (read_line(input, 2) == nullptr) {
+             selection = QUIT;
+         }else {
+             const bool is_parsed = get_int(input, &selection, 0,4);
+             if (!is_parsed) {continue;}
+         }
 
         // printf("\nselector: %i\n", selection);
         const MenuState action = selection;
@@ -55,8 +62,21 @@ int main() {
         switch (action) {
             case ADD: {
                 printf("ADD\n");
-                
-                // contacts[sizeof(contacts)-1].name[0] = '\0';
+                // printf("Type name here:");
+                // char name[MAX_NAME_LEN];
+                // while (fgets(name, MAX_NAME_LEN, stdin));
+                // name[strcspn(name, "\n")] = '\0';
+                // strncpy(contacts[0].name, name, MAX_NAME_LEN-1);
+                //
+                // printf("\nType email here:");
+                // fgets(name, MAX_NAME_LEN, stdin);
+                // name[strcspn(name, "\n")] = '\0';
+                // strncpy(contacts[0].email, name, MAX_NAME_LEN-1);
+                //
+                // printf("\nType age here:");
+                // int age;
+                // scanf("%i", &age);
+                // contacts[0].age = age;
                 break;
             }
             case LIST: {
