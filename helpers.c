@@ -8,7 +8,7 @@ char *read_line(char *buffer, const int size) {
         const int LENGTH = (int)strlen(buffer);
         // printf("\n [debugging] buffer: [%s], length: %i\n", buffer, LENGTH);
         if (LENGTH > 0 && !(buffer[LENGTH-1] == '\n' || buffer[LENGTH-1] == EOF)) {
-            //drop line didn't fit into buffer
+            //drop line that didn't fit into buffer
             int c;
             while (( c = fgetc(stdin)) != '\n' && c != EOF) {};
             // printf("\n [debugging] Emptied stdin\n");
@@ -40,14 +40,17 @@ bool get_int(const char *str, int *out, int min, int max) {
     return true;
 }
 
-bool prompt_int(const char *prompt, int *out, const int min, const int max) {
-    printf("%s:", prompt);
+InputStatus prompt_int(const char *prompt, int *out, const int min, const int max) {
+    printf("%s", prompt);
     constexpr int SIZE = 32;
     char input[SIZE];
     if (read_line(input, SIZE) == nullptr) {
-        return false;
+        return INPUT_EOF;
     }
 
     const bool is_parsed = get_int(input, out, min, max);
-    return is_parsed;
+    if (is_parsed) {
+        return INPUT_OK;
+    }
+    return INPUT_INVALID;
 }

@@ -49,11 +49,15 @@ int main() {
         );
 
         int selection;
-        const bool received_int = prompt_int("\nYour selection:", &selection, 0,4);
+        const InputStatus received_int = prompt_int("\nYour selection:", &selection, 0,4);
 
-        if (received_int == false) {
+        if (received_int == INPUT_INVALID) {
             printf("\nFailed to select an action, please try again...\n\n");
             continue;
+        }
+        
+        if (received_int == INPUT_EOF) {
+            selection = QUIT;
         }
 
         const MenuState action = selection;
@@ -61,6 +65,7 @@ int main() {
         switch (action) {
             case ADD: {
                 printf("ADD\n");
+
                 // printf("Type name here:");
                 // char name[MAX_NAME_LEN];
                 // while (fgets(name, MAX_NAME_LEN, stdin));
@@ -91,7 +96,7 @@ int main() {
                 break;
             }
             case QUIT: {
-                printf("QUITTING...\n");
+                printf("\nQUITTING...\n");
                 return 0;
             }
         }
