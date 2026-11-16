@@ -5,7 +5,16 @@
 
 char *read_line(char *buffer, const int size) {
     if (fgets(buffer, size, stdin) != NULL) {
-        buffer[strcspn(buffer, "\n")] = '\0';
+        const int LENGTH = (int)strlen(buffer);
+        printf("\n [debugging] buffer: [%s], length: %i\n", buffer, LENGTH);
+        if (LENGTH > 0 && !(buffer[LENGTH-1] == '\n' || buffer[LENGTH-1] == EOF)) {
+            //drop line didn't fit into buffer
+            int c;
+            while (( c = fgetc(stdin)) != '\n' && c != EOF) {};
+            printf("\n [debugging] Emptied stdin\n");
+        }else {
+            buffer[strcspn(buffer, "\n")] = '\0';
+        }
         return buffer;
     }
     return nullptr;
