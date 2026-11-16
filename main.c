@@ -48,22 +48,14 @@ int main() {
             get_menu_state(QUIT)
         );
 
-        printf("\nYour selection:");
         int selection;
-        constexpr int SELECTION_SIZE = 3;
-        char input[SELECTION_SIZE];
-         if (read_line(input, SELECTION_SIZE) == nullptr) {
-            printf("\n[debugging] Failed to read line: %s\n", input);
-             selection = QUIT;
-         }else {
-             const bool is_parsed = get_int(input, &selection, 0,4);
-             if (is_parsed == false) {
-                 printf("\n[debugging] is parsed: %b\n", is_parsed);
-                 continue;
-             }
-         }
+        const bool received_int = prompt_int("\nYour selection:", &selection, 0,4);
 
-        // printf("\nselector: %i\n", selection);
+        if (received_int == false) {
+            printf("\nFailed to select an action, please try again...\n\n");
+            continue;
+        }
+
         const MenuState action = selection;
 
         switch (action) {
