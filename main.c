@@ -1,4 +1,6 @@
 #include <stdio.h>
+#include <string.h>
+
 #include "helpers.h"
 
 #define MAX_NAME_LEN 64
@@ -47,13 +49,18 @@ int main() {
         );
 
         printf("\nYour selection:");
-        int selection = 0;
-        char input[2];
-         if (read_line(input, 2) == nullptr) {
+        int selection;
+        constexpr int SELECTION_SIZE = 3;
+        char input[SELECTION_SIZE];
+         if (read_line(input, SELECTION_SIZE) == nullptr) {
+            printf("\n[debugging] Failed to read line: %s\n", input);
              selection = QUIT;
          }else {
              const bool is_parsed = get_int(input, &selection, 0,4);
-             if (!is_parsed) {continue;}
+             if (is_parsed == false) {
+                 printf("\n[debugging] is parsed: %b\n", is_parsed);
+                 continue;
+             }
          }
 
         // printf("\nselector: %i\n", selection);
@@ -96,5 +103,6 @@ int main() {
                 return 0;
             }
         }
+
     }
 }
