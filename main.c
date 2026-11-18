@@ -31,9 +31,16 @@ static const char *get_menu_state(MenuState state) {
     return "Invalid";
 }
 
+static void print_contact(Contact contact) {
+    printf("\nContact:\n");
+    printf("Name: %s\n", contact.name);
+    printf("Age: %d\n", contact.age);
+    printf("Email: %s\n", contact.email);
+}
+
 int main() {
     Contact contacts[MAX_CONTACTS] = {};
-
+    int count = -1;
     while (1) {
         printf("\nPlease select an action:\n%i. %s\n%i. %s\n%i. %s\n%i. %s\n%i. %s\n",
             ADD,
@@ -64,27 +71,33 @@ int main() {
 
         switch (action) {
             case ADD: {
+                int i=0;
+                if (count >= MAX_CONTACTS) {
+                    for (int j=0; j < MAX_CONTACTS; j++) {
+                        if (contacts[j].status == CONTACT_DELETED) {
+                            printf("\nReplacing the deleted contact %i...\n", j);
+                            print_contact(contacts[j]);
+                            i = j;
+                        }
+                    }
+                }else {
+                    count++;
+                    i = count;
+                }
                 printf("ADD\n");
-
-                // printf("Type name here:");
-                // char name[MAX_NAME_LEN];
-                // while (fgets(name, MAX_NAME_LEN, stdin));
-                // name[strcspn(name, "\n")] = '\0';
-                // strncpy(contacts[0].name, name, MAX_NAME_LEN-1);
-                //
-                // printf("\nType email here:");
-                // fgets(name, MAX_NAME_LEN, stdin);
-                // name[strcspn(name, "\n")] = '\0';
-                // strncpy(contacts[0].email, name, MAX_NAME_LEN-1);
-                //
-                // printf("\nType age here:");
-                // int age;
-                // scanf("%i", &age);
-                // contacts[0].age = age;
+                prompt_string("Type name here:", contacts[i].name, MAX_NAME_LEN);
+                prompt_int("Type age here:", &contacts[i].age, 0, 150);
+                prompt_string("Type email here:", contacts[i].email, MAX_NAME_LEN);
+                contacts[i].status = CONTACT_ACTIVE;
                 break;
             }
             case LIST: {
                 printf("LIST\n");
+                for (int i = 0; i < MAX_CONTACTS; i++) {
+                    if (contacts[i].status == CONTACT_ACTIVE) {
+                        print_contact(contacts[i]);
+                    }
+                }
                 break;
             }
             case SEARCH: {
