@@ -40,6 +40,9 @@ static void print_contact(Contact contact) {
 
 int main() {
     Contact contacts[MAX_CONTACTS] = {};
+    for (int i = 0; i < MAX_CONTACTS; i++) {
+        contacts[i].status = CONTACT_DELETED;
+    }
     int count = -1;
     while (1) {
         printf("\nPlease select an action:\n%i. %s\n%i. %s\n%i. %s\n%i. %s\n%i. %s\n",
@@ -102,6 +105,14 @@ int main() {
             }
             case SEARCH: {
                 printf("SEARCH\n");
+                char query[MAX_NAME_LEN] = "";
+                prompt_string("Search for contact:", query, MAX_NAME_LEN);
+                printf("Results for Query [%s]:\n", query);
+                for (int i = 0; i < MAX_CONTACTS; i++) {
+                    if (contacts[i].status == CONTACT_ACTIVE && strstr(contacts[i].name, query)) {
+                        print_contact(contacts[i]);
+                    }
+                }
                 break;
             }
             case DELETE: {
