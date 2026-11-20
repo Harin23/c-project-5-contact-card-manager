@@ -143,6 +143,17 @@ int main() {
             }
             case DELETE: {
                 printf("DELETE\n");
+                int i = 0;
+                const InputStatus status = prompt_int("Search for contact:", &i, 0, MAX_CONTACTS);
+                if (status == INPUT_EOF) {
+                    exit();
+                    return 0;
+                }
+                if (status == INPUT_INVALID) {
+                    printf("\n\nInvalid input\n\n");
+                    break;
+                }
+                contacts[i].status = CONTACT_DELETED;
                 break;
             }
             case QUIT: {
