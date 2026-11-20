@@ -61,7 +61,6 @@ int main() {
     for (int i = 0; i < MAX_CONTACTS; i++) {
         contacts[i].status = CONTACT_DELETED;
     }
-    int count = -1;
     while (1) {
         printf("\nPlease select an action:\n%i. %s\n%i. %s\n%i. %s\n%i. %s\n%i. %s\n",
                ADD,
@@ -90,17 +89,19 @@ int main() {
         switch (action) {
             case ADD: {
                 int i = 0;
-                if (count >= MAX_CONTACTS) {
-                    for (int j = 0; j < MAX_CONTACTS; j++) {
-                        if (contacts[j].status == CONTACT_DELETED) {
-                            printf("\nReplacing the deleted contact %i...\n", j);
-                            print_contact(contacts[j], j);
-                            i = j;
-                        }
+                bool found = false;
+                for (int j = 0; j < MAX_CONTACTS; j++) {
+                    if (contacts[j].status == CONTACT_DELETED) {
+                        printf("\nReplacing the deleted contact %i...\n", j);
+                        print_contact(contacts[j], j);
+                        i = j;
+                        found = true;
+                        break;
                     }
-                } else {
-                    count++;
-                    i = count;
+                }
+                if (!found) {
+                    printf("\n\nRoster Full\n\n");
+                    break;
                 }
                 printf("ADD\n");
                 const InputStatus status = get_contact(&contacts[i]);
@@ -145,7 +146,7 @@ int main() {
             case DELETE: {
                 printf("DELETE\n");
                 int i = 0;
-                const InputStatus status = prompt_int("Search for contact:", &i, 1, MAX_CONTACTS + 1);
+                const InputStatus status = prompt_int("Enter index for contact:", &i, 1, MAX_CONTACTS);
                 if (status == INPUT_EOF) {
                     handle_quit();
                     return 0;
@@ -154,7 +155,11 @@ int main() {
                     printf("\n\nInvalid input\n\n");
                     break;
                 }
-                contacts[i - 1].status = CONTACT_DELETED;
+                if (contacts[i].status == CONTACT_ACTIVE) {
+                    contacts[i].status = CONTACT_DELETED;
+                } else {
+                    printf("\n\nInvalid: Nothing to delete\n\n");
+                }
                 break;
             }
             case QUIT: {
