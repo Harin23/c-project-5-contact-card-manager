@@ -7,10 +7,11 @@ InputStatus read_line(char *buffer, const int size) {
     if (fgets(buffer, size, stdin) != NULL) {
         const size_t LENGTH = strlen(buffer);
         // printf("\n [debugging] buffer: [%s], length: %i\n", buffer, LENGTH);
-        if (LENGTH > 0 && !(buffer[LENGTH-1] == '\n' || buffer[LENGTH-1] == EOF)) {
+        if (LENGTH > 0 && !(buffer[LENGTH - 1] == '\n' || buffer[LENGTH - 1] == EOF)) {
             //drop line that didn't fit into buffer
             int c;
-            while (( c = fgetc(stdin)) != '\n' && c != EOF) {};
+            while ((c = fgetc(stdin)) != '\n' && c != EOF) {
+            };
             // printf("\n [debugging] Emptied stdin\n");
             return INPUT_INVALID;
         }
@@ -34,15 +35,18 @@ bool get_int(const char *str, int *out, int min, int max) {
 
     // printf("The number is: %ld\n", parsed);
     //todo make max/min checks optional
-    if (parsed > (size_t)max) return false;
-    if (parsed < (size_t)min) return false;
-    *out = (int)parsed;
+    if (parsed > (size_t) max) return false;
+    if (parsed < (size_t) min) return false;
+    *out = (int) parsed;
     return true;
 }
 
 InputStatus prompt_string(const char *prompt, char *out, const int SIZE) {
     printf("%s", prompt);
-    const InputStatus status =  read_line(out, SIZE);
+    const InputStatus status = read_line(out, SIZE);
+    if (status != INPUT_OK) {
+        return status;
+    }
     if (out[0] == '\0') {
         return INPUT_INVALID;
     }

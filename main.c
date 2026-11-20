@@ -92,8 +92,7 @@ int main() {
                 bool found = false;
                 for (int j = 0; j < MAX_CONTACTS; j++) {
                     if (contacts[j].status == CONTACT_DELETED) {
-                        printf("\nReplacing the deleted contact %i...\n", j);
-                        print_contact(contacts[j], j);
+                        printf("\nAdding contact at %i...\n", j);
                         i = j;
                         found = true;
                         break;
