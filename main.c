@@ -44,14 +44,14 @@ static InputStatus get_contact(Contact *out){
     return INPUT_OK;
 }
 
-static void print_contact(Contact contact) {
-    printf("\nContact:\n");
+static void print_contact(Contact contact, const int i) {
+    printf("\nContact %i:\n", i+1);
     printf("Name: %s\n", contact.name);
     printf("Age: %d\n", contact.age);
     printf("Email: %s\n", contact.email);
 }
 
-static void exit() {
+static void handle_quit() {
     printf("\nQUITTING...\n");
 }
 
@@ -93,7 +93,7 @@ int main() {
                     for (int j=0; j < MAX_CONTACTS; j++) {
                         if (contacts[j].status == CONTACT_DELETED) {
                             printf("\nReplacing the deleted contact %i...\n", j);
-                            print_contact(contacts[j]);
+                            print_contact(contacts[j], j);
                             i = j;
                         }
                     }
@@ -104,7 +104,7 @@ int main() {
                 printf("ADD\n");
                 const InputStatus status = get_contact(&contacts[i]);
                 if (status == INPUT_EOF) {
-                    exit();
+                    handle_quit();
                     return 0;
                 }
                 if (status == INPUT_INVALID) {
@@ -116,7 +116,7 @@ int main() {
                 printf("LIST\n");
                 for (int i = 0; i < MAX_CONTACTS; i++) {
                     if (contacts[i].status == CONTACT_ACTIVE) {
-                        print_contact(contacts[i]);
+                        print_contact(contacts[i], i);
                     }
                 }
                 break;
@@ -126,7 +126,7 @@ int main() {
                 char query[MAX_NAME_LEN] = "";
                 const InputStatus status = prompt_string("Search for contact:", query, MAX_NAME_LEN);
                 if (status == INPUT_EOF) {
-                    exit();
+                    handle_quit();
                     return 0;
                 }
                 if (status == INPUT_INVALID) {
@@ -136,7 +136,7 @@ int main() {
                 printf("Results for Query [%s]:\n", query);
                 for (int i = 0; i < MAX_CONTACTS; i++) {
                     if (contacts[i].status == CONTACT_ACTIVE && strstr(contacts[i].name, query)) {
-                        print_contact(contacts[i]);
+                        print_contact(contacts[i], i);
                     }
                 }
                 break;
@@ -144,20 +144,20 @@ int main() {
             case DELETE: {
                 printf("DELETE\n");
                 int i = 0;
-                const InputStatus status = prompt_int("Search for contact:", &i, 0, MAX_CONTACTS);
+                const InputStatus status = prompt_int("Search for contact:", &i, 1, MAX_CONTACTS+1);
                 if (status == INPUT_EOF) {
-                    exit();
+                    handle_quit();
                     return 0;
                 }
                 if (status == INPUT_INVALID) {
                     printf("\n\nInvalid input\n\n");
                     break;
                 }
-                contacts[i].status = CONTACT_DELETED;
+                contacts[i-1].status = CONTACT_DELETED;
                 break;
             }
             case QUIT: {
-                exit();
+                handle_quit();
                 return 0;
             }
         }
