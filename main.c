@@ -154,8 +154,8 @@ int main() {
                     printf("\n\nInvalid input\n\n");
                     break;
                 }
-                if (contacts[i].status == CONTACT_ACTIVE) {
-                    contacts[i].status = CONTACT_DELETED;
+                if (contacts[i-1].status == CONTACT_ACTIVE) {
+                    contacts[i-1].status = CONTACT_DELETED;
                 } else {
                     printf("\n\nInvalid: Nothing to delete\n\n");
                 }
