@@ -18,7 +18,8 @@ typedef struct {
     ContactStatus status;
 } Contact;
 
-typedef enum {ADD, LIST, SEARCH, DELETE, QUIT} MenuState;
+typedef enum { ADD, LIST, SEARCH, DELETE, QUIT } MenuState;
+
 static const char *get_menu_state(MenuState state) {
     switch (state) {
         case ADD: return "ADD";
@@ -31,7 +32,7 @@ static const char *get_menu_state(MenuState state) {
     return "Invalid";
 }
 
-static InputStatus get_contact(Contact *out){
+static InputStatus get_contact(Contact *out) {
     Contact temp = {};
     temp.status = CONTACT_ACTIVE;
     const InputStatus name_status = prompt_string("Type name here:", temp.name, MAX_NAME_LEN);
@@ -45,7 +46,7 @@ static InputStatus get_contact(Contact *out){
 }
 
 static void print_contact(Contact contact, const int i) {
-    printf("\nContact %i:\n", i+1);
+    printf("\nContact %i:\n", i + 1);
     printf("Name: %s\n", contact.name);
     printf("Age: %d\n", contact.age);
     printf("Email: %s\n", contact.email);
@@ -63,20 +64,20 @@ int main() {
     int count = -1;
     while (1) {
         printf("\nPlease select an action:\n%i. %s\n%i. %s\n%i. %s\n%i. %s\n%i. %s\n",
-            ADD,
-            get_menu_state(ADD),
-            LIST,
-            get_menu_state(LIST),
-            SEARCH,
-            get_menu_state(SEARCH),
-            DELETE,
-            get_menu_state(DELETE),
-            QUIT,
-            get_menu_state(QUIT)
+               ADD,
+               get_menu_state(ADD),
+               LIST,
+               get_menu_state(LIST),
+               SEARCH,
+               get_menu_state(SEARCH),
+               DELETE,
+               get_menu_state(DELETE),
+               QUIT,
+               get_menu_state(QUIT)
         );
 
         int selection;
-        const InputStatus received_int = prompt_int("\nYour selection:", &selection, 0,4);
+        const InputStatus received_int = prompt_int("\nYour selection:", &selection, 0, 4);
 
         if (received_int == INPUT_INVALID) {
             printf("\nFailed to select an action, please try again...\n\n");
@@ -88,16 +89,16 @@ int main() {
 
         switch (action) {
             case ADD: {
-                int i=0;
+                int i = 0;
                 if (count >= MAX_CONTACTS) {
-                    for (int j=0; j < MAX_CONTACTS; j++) {
+                    for (int j = 0; j < MAX_CONTACTS; j++) {
                         if (contacts[j].status == CONTACT_DELETED) {
                             printf("\nReplacing the deleted contact %i...\n", j);
                             print_contact(contacts[j], j);
                             i = j;
                         }
                     }
-                }else {
+                } else {
                     count++;
                     i = count;
                 }
@@ -144,7 +145,7 @@ int main() {
             case DELETE: {
                 printf("DELETE\n");
                 int i = 0;
-                const InputStatus status = prompt_int("Search for contact:", &i, 1, MAX_CONTACTS+1);
+                const InputStatus status = prompt_int("Search for contact:", &i, 1, MAX_CONTACTS + 1);
                 if (status == INPUT_EOF) {
                     handle_quit();
                     return 0;
@@ -153,7 +154,7 @@ int main() {
                     printf("\n\nInvalid input\n\n");
                     break;
                 }
-                contacts[i-1].status = CONTACT_DELETED;
+                contacts[i - 1].status = CONTACT_DELETED;
                 break;
             }
             case QUIT: {
@@ -161,6 +162,5 @@ int main() {
                 return 0;
             }
         }
-
     }
 }
