@@ -31,11 +31,28 @@ static const char *get_menu_state(MenuState state) {
     return "Invalid";
 }
 
+static InputStatus get_contact(Contact *out){
+    Contact temp = {};
+    temp.status = CONTACT_ACTIVE;
+    const InputStatus name_status = prompt_string("Type name here:", temp.name, MAX_NAME_LEN);
+    if (name_status != INPUT_OK) return name_status;
+    const InputStatus age_status = prompt_int("Type age here:", &temp.age, 0, 150);
+    if (age_status != INPUT_OK) return age_status;
+    const InputStatus email_status = prompt_string("Type email here:", temp.email, MAX_NAME_LEN);
+    if (email_status != INPUT_OK) return email_status;
+    *out = temp;
+    return INPUT_OK;
+}
+
 static void print_contact(Contact contact) {
     printf("\nContact:\n");
     printf("Name: %s\n", contact.name);
     printf("Age: %d\n", contact.age);
     printf("Email: %s\n", contact.email);
+}
+
+static void exit() {
+    printf("\nQUITTING...\n");
 }
 
 int main() {
@@ -65,10 +82,7 @@ int main() {
             printf("\nFailed to select an action, please try again...\n\n");
             continue;
         }
-        
-        if (received_int == INPUT_EOF) {
-            selection = QUIT;
-        }
+        if (received_int == INPUT_EOF) selection = QUIT;
 
         const MenuState action = selection;
 
@@ -88,10 +102,14 @@ int main() {
                     i = count;
                 }
                 printf("ADD\n");
-                prompt_string("Type name here:", contacts[i].name, MAX_NAME_LEN);
-                prompt_int("Type age here:", &contacts[i].age, 0, 150);
-                prompt_string("Type email here:", contacts[i].email, MAX_NAME_LEN);
-                contacts[i].status = CONTACT_ACTIVE;
+                const InputStatus status = get_contact(&contacts[i]);
+                if (status == INPUT_EOF) {
+                    exit();
+                    return 0;
+                }
+                if (status == INPUT_INVALID) {
+                    printf("\n\nInvalid input\n\n");
+                }
                 break;
             }
             case LIST: {
@@ -106,7 +124,15 @@ int main() {
             case SEARCH: {
                 printf("SEARCH\n");
                 char query[MAX_NAME_LEN] = "";
-                prompt_string("Search for contact:", query, MAX_NAME_LEN);
+                const InputStatus status = prompt_string("Search for contact:", query, MAX_NAME_LEN);
+                if (status == INPUT_EOF) {
+                    exit();
+                    return 0;
+                }
+                if (status == INPUT_INVALID) {
+                    printf("\n\nInvalid input\n\n");
+                    break;
+                }
                 printf("Results for Query [%s]:\n", query);
                 for (int i = 0; i < MAX_CONTACTS; i++) {
                     if (contacts[i].status == CONTACT_ACTIVE && strstr(contacts[i].name, query)) {
@@ -120,7 +146,7 @@ int main() {
                 break;
             }
             case QUIT: {
-                printf("\nQUITTING...\n");
+                exit();
                 return 0;
             }
         }
